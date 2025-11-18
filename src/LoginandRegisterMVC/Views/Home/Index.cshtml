@@ -1,0 +1,30 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="hero">
+    <div class="hero-inner">
+        <h1 class="gradient-text">Smarter User Management.<br /> <span class="muted" style="font-weight:600;">Powered by AI Assistance.</span></h1>
+        <p class="lead">A modern, AI-augmented dashboard for authentication and roles. Enhanced styling inspired by contemporary SaaS platforms.</p>
+        <a asp-controller="Users" asp-action="Register" class="btn btn-accent btn-lg me-2">Get Started &raquo;</a>
+        <a asp-controller="Users" asp-action="Login" class="btn btn-outline-light btn-lg" style="border-radius:12px;">Login</a>
+        <div class="mt-4">
+            <a href="https://asp.net" target="_blank" class="small-link">Learn about ASP.NET &rsaquo;</a>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4 mb-4">
+        <h3 class="gradient-text" style="font-size:1.4rem;">Secure Auth</h3>
+        <p class="muted">Credential handling with hashed passwords and structured MVC patterns for extension.</p>
+    </div>
+    <div class="col-md-4 mb-4">
+        <h3 class="gradient-text" style="font-size:1.4rem;">Role-Based Access</h3>
+        <p class="muted">Simple role concept ready for expansion into claims, policies, and granular permissions.</p>
+    </div>
+    <div class="col-md-4 mb-4">
+        <h3 class="gradient-text" style="font-size:1.4rem;">Extensible Design</h3>
+        <p class="muted">New theme architecture with variables prepares project for light/dark toggles and branding.</p>
+    </div>
+</div>

@@ -1,0 +1,43 @@
+@model IEnumerable<LoginandRegisterMVC.Models.User>
+
+@{
+    ViewData["Title"] = "Dashboard Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h2 class="gradient-text">Dashboard</h2>
+        <div class="dashboard-actions">
+            <a asp-action="Register" class="btn btn-primary-gradient">Add User</a>
+            <a asp-action="Logout" class="btn btn-outline-light" style="border-radius: 12px;">Logout</a>
+        </div>
+    </div>
+    
+    <div class="dashboard-welcome">
+        Welcome back, <strong>@Context.Session.GetString("Username")</strong>! 👋
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.UserId)</th>
+                <th>@Html.DisplayNameFor(model => model.Username)</th>
+                <th>@Html.DisplayNameFor(model => model.Role)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.UserId)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Username)</td>
+                    <td>
+                        <span class="badge" style="background: rgba(99,102,241,.2); color: var(--color-accent); padding: .375rem .75rem; border-radius: 6px; font-weight: 600;">
+                            @Html.DisplayFor(modelItem => item.Role)
+                        </span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
