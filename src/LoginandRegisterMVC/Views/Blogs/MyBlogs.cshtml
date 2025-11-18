@@ -1,0 +1,177 @@
+@model IEnumerable<LoginandRegisterMVC.Models.Blog>
+
+@{
+    ViewData["Title"] = "My Blogs";
+    var currentFilter = ViewBag.CurrentFilter as string ?? "all";
+    var publishedCount = ViewBag.PublishedCount as int? ?? 0;
+    var draftCount = ViewBag.DraftCount as int? ?? 0;
+    var totalCount = ViewBag.TotalCount as int? ?? 0;
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="gradient-text">My Blogs</h1>
+            <p class="muted">Manage your blog posts</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a asp-action="Create" class="btn btn-accent">
+                <i class="bi bi-plus-circle"></i> Create New Blog
+            </a>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="gradient-text">@totalCount</h3>
+                    <p class="mb-0">Total Blogs</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-success">@publishedCount</h3>
+                    <p class="mb-0">Published</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-warning">@draftCount</h3>
+                    <p class="mb-0">Drafts</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item">
+            <a class="nav-link @(currentFilter == "all" ? "active" : "")" 
+               asp-action="MyBlogs" asp-route-filter="all">
+                All (@totalCount)
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentFilter == "published" ? "active" : "")" 
+               asp-action="MyBlogs" asp-route-filter="published">
+                Published (@publishedCount)
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentFilter == "drafts" ? "active" : "")" 
+               asp-action="MyBlogs" asp-route-filter="drafts">
+                Drafts (@draftCount)
+            </a>
+        </li>
+    </ul>
+
+    <!-- Blogs Table -->
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <h4>No blogs found</h4>
+            <p>Start by creating your first blog post!</p>
+            <a asp-action="Create" class="btn btn-primary">Create New Blog</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Views</th>
+                        <th>Last Modified</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var blog in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@blog.BlogId" 
+                                   class="text-decoration-none fw-bold">
+                                    @blog.Title
+                                </a>
+                                <br />
+                                <small class="text-muted">
+                                    @(blog.ShortDescription.Length > 60 
+                                        ? blog.ShortDescription.Substring(0, 60) + "..." 
+                                        : blog.ShortDescription)
+                                </small>
+                            </td>
+                            <td>
+                                @if (blog.Status == BlogStatus.Published)
+                                {
+                                    <span class="badge bg-success">Published</span>
+                                }
+                                else if (blog.Status == BlogStatus.Draft)
+                                {
+                                    <span class="badge bg-warning">Draft</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@blog.Status</span>
+                                }
+                            </td>
+                            <td>@blog.ViewCount</td>
+                            <td>
+                                @blog.LastModifiedDate.ToString("MMM dd, yyyy")<br />
+                                <small class="text-muted">
+                                    @blog.LastModifiedDate.ToString("hh:mm tt")
+                                </small>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a asp-action="Details" asp-route-id="@blog.BlogId" 
+                                       class="btn btn-sm btn-info" title="View">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@blog.BlogId" 
+                                       class="btn btn-sm btn-primary" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    @if (blog.Status == BlogStatus.Draft)
+                                    {
+                                        <form asp-action="ChangeStatus" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@blog.BlogId" />
+                                            <input type="hidden" name="newStatus" value="@BlogStatus.Published" />
+                                            <button type="submit" class="btn btn-sm btn-success" 
+                                                    title="Publish">
+                                                <i class="bi bi-send"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                    <a asp-action="Delete" asp-route-id="@blog.BlogId" 
+                                       class="btn btn-sm btn-danger" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+

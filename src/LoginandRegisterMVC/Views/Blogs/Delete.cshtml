@@ -1,0 +1,71 @@
+@model LoginandRegisterMVC.Models.Blog
+
+@{
+    ViewData["Title"] = "Delete Blog";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-exclamation-triangle"></i> Delete Blog
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <h4>Are you sure you want to delete this blog?</h4>
+                    <p class="mb-0">This action cannot be undone. All data associated with this blog will be permanently removed.</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="~/@Model.FeaturedImage" alt="@Model.Title" 
+                             class="img-fluid rounded" />
+                    </div>
+                    <div class="col-md-8">
+                        <dl class="row">
+                            <dt class="col-sm-4">Title</dt>
+                            <dd class="col-sm-8">@Model.Title</dd>
+
+                            <dt class="col-sm-4">Author</dt>
+                            <dd class="col-sm-8">@Model.Author?.Username</dd>
+
+                            <dt class="col-sm-4">Status</dt>
+                            <dd class="col-sm-8">
+                                <span class="badge bg-@(Model.Status == BlogStatus.Published ? "success" : "warning")">
+                                    @Model.Status
+                                </span>
+                            </dd>
+
+                            <dt class="col-sm-4">Created</dt>
+                            <dd class="col-sm-8">@Model.CreatedDate.ToString("MMMM dd, yyyy")</dd>
+
+                            <dt class="col-sm-4">Views</dt>
+                            <dd class="col-sm-8">@Model.ViewCount</dd>
+
+                            <dt class="col-sm-4">Description</dt>
+                            <dd class="col-sm-8">@Model.ShortDescription</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <hr />
+
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" asp-for="BlogId" />
+                    @Html.AntiForgeryToken()
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you absolutely sure? This cannot be undone!')">
+                            <i class="bi bi-trash"></i> Yes, Delete Permanently
+                        </button>
+                        <a asp-action="MyBlogs" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

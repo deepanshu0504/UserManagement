@@ -46,6 +46,7 @@ builder.Services.AddSession(options =>
 
 // Add services
 builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
+builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 
 // Add runtime compilation for development
 if (builder.Environment.IsDevelopment())

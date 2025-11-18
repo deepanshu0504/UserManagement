@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <script src="~/js/modernizr-2.8.3.js"></script>
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="theme-dark">
     <nav class="navbar navbar-expand-lg navbar-dark navbar-gradient">
@@ -22,6 +23,9 @@
                     <a class="nav-link" asp-controller="Users" asp-action="Index">Home</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" asp-controller="Blogs" asp-action="Index">Blogs</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" asp-controller="Users" asp-action="Login">Login</a>
                 </li>
                 <li class="nav-item">
@@ -29,6 +33,9 @@
                 </li>
                 @if (Context.Session.GetString("UserId") != null)
                 {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Blogs" asp-action="MyBlogs">My Blogs</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Users" asp-action="Logout">Logout</a>
                     </li>

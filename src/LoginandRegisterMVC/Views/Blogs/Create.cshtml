@@ -1,0 +1,143 @@
+@model LoginandRegisterMVC.Models.Blog
+
+@{
+    ViewData["Title"] = "Create Blog";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-10">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h2 class="gradient-text mb-0">Create New Blog Post</h2>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post" enctype="multipart/form-data" id="blogForm">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label"></label>
+                        <input asp-for="Title" class="form-control" placeholder="Enter blog title" maxlength="200" />
+                        <div class="form-text">
+                            <span id="titleCount">0</span> / 200 characters
+                        </div>
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ShortDescription" class="form-label"></label>
+                        <textarea asp-for="ShortDescription" class="form-control" rows="3" 
+                                  placeholder="Brief description of your blog" maxlength="500"></textarea>
+                        <div class="form-text">
+                            <span id="descCount">0</span> / 500 characters
+                        </div>
+                        <span asp-validation-for="ShortDescription" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Content" class="form-label"></label>
+                        <textarea asp-for="Content" class="form-control" rows="10" 
+                                  placeholder="Write your blog content here..."></textarea>
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ImageFile" class="form-label"></label>
+                        <input asp-for="ImageFile" type="file" class="form-control" 
+                               accept=".jpg,.jpeg,.png,.gif" id="imageUpload" />
+                        <div class="form-text">
+                            Accepted formats: JPG, JPEG, PNG, GIF. Maximum size: 5MB
+                        </div>
+                        <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        
+                        <!-- Image Preview -->
+                        <div id="imagePreview" class="mt-3" style="display: none;">
+                            <label class="form-label">Preview:</label>
+                            <div>
+                                <img id="preview" src="#" alt="Preview" style="max-width: 300px; max-height: 300px; border-radius: 8px;" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="MetaDescription" class="form-label"></label>
+                        <textarea asp-for="MetaDescription" class="form-control" rows="2" 
+                                  placeholder="SEO meta description (optional)" maxlength="160"></textarea>
+                        <div class="form-text">
+                            <span id="metaCount">0</span> / 160 characters (Optional - helps with SEO)
+                        </div>
+                        <span asp-validation-for="MetaDescription" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <div>
+                            <button type="submit" name="action" value="draft" class="btn btn-secondary me-2">
+                                <i class="bi bi-save"></i> Save as Draft
+                            </button>
+                            <button type="submit" name="action" value="publish" class="btn btn-accent">
+                                <i class="bi bi-send"></i> Publish
+                            </button>
+                        </div>
+                        <a asp-controller="Users" asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Character counters
+        document.getElementById('Title').addEventListener('input', function() {
+            document.getElementById('titleCount').textContent = this.value.length;
+        });
+        
+        document.getElementById('ShortDescription').addEventListener('input', function() {
+            document.getElementById('descCount').textContent = this.value.length;
+        });
+        
+        const metaField = document.getElementById('MetaDescription');
+        if (metaField) {
+            metaField.addEventListener('input', function() {
+                document.getElementById('metaCount').textContent = this.value.length;
+            });
+        }
+
+        // Image preview
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validate file size
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size cannot exceed 5MB');
+                    this.value = '';
+                    document.getElementById('imagePreview').style.display = 'none';
+                    return;
+                }
+                
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('preview').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById('imagePreview').style.display = 'none';
+            }
+        });
+
+        // Form submission confirmation
+        document.getElementById('blogForm').addEventListener('submit', function(e) {
+            const action = e.submitter.value;
+            if (action === 'publish') {
+                if (!confirm('Are you sure you want to publish this blog? It will be visible to all visitors.')) {
+                    e.preventDefault();
+                }
+            }
+        });
+    </script>
+}
+

@@ -1,0 +1,107 @@
+@model LoginandRegisterMVC.Models.Blog
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mt-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        <li class="breadcrumb-item"><a asp-controller="Blogs" asp-action="Index">Blogs</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
+    </ol>
+</nav>
+
+<article class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Blog Header -->
+            <header class="mb-4">
+                <h1 class="display-4 fw-bold">@Model.Title</h1>
+                
+                <div class="d-flex align-items-center text-muted mb-3">
+                    <div class="me-4">
+                        <i class="bi bi-person-circle"></i>
+                        @Model.Author?.Username
+                    </div>
+                    <div class="me-4">
+                        <i class="bi bi-calendar-event"></i>
+                        @Model.PublishedDate?.ToString("MMMM dd, yyyy")
+                    </div>
+                    <div class="me-4">
+                        <i class="bi bi-eye"></i>
+                        @Model.ViewCount views
+                    </div>
+                </div>
+
+                @if (Model.Status != BlogStatus.Published)
+                {
+                    <div class="alert alert-warning">
+                        <strong>Status:</strong> @Model.Status (Preview Mode)
+                    </div>
+                }
+
+                @if (User.Identity?.IsAuthenticated == true && 
+                     (Model.AuthorId == User.Identity.Name || User.IsInRole("Admin")))
+                {
+                    <div class="mb-3">
+                        <a asp-action="Edit" asp-route-id="@Model.BlogId" class="btn btn-sm btn-primary">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.BlogId" class="btn btn-sm btn-danger">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </div>
+                }
+            </header>
+
+            <!-- Featured Image -->
+            <div class="mb-4">
+                <img src="~/@Model.FeaturedImage" alt="@Model.Title" 
+                     class="img-fluid rounded shadow" style="width: 100%;" />
+            </div>
+
+            <!-- Blog Content -->
+            <div class="blog-content mb-5">
+                @Html.Raw(Model.Content.Replace("\n", "<br/>"))
+            </div>
+
+            <hr />
+
+            <!-- Blog Footer -->
+            <footer class="mb-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="small text-muted">
+                            <strong>Published:</strong> @Model.PublishedDate?.ToString("MMMM dd, yyyy hh:mm tt")<br />
+                            <strong>Last Updated:</strong> @Model.LastModifiedDate.ToString("MMMM dd, yyyy hh:mm tt")
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <a asp-action="Index" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left"></i> Back to Blogs
+                        </a>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+</article>
+
+@section Styles {
+    <style>
+        .blog-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333;
+        }
+        .theme-dark .blog-content {
+            color: #e0e0e0;
+        }
+        .blog-content p {
+            margin-bottom: 1.5rem;
+        }
+    </style>
+}
+
